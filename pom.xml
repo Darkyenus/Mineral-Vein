@@ -1,0 +1,140 @@
+<!--
+	Maven build file for MineralVein++
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Project information -->
+	<groupId>mort.MineralVein</groupId>
+	<artifactId>mineralveinplusplus</artifactId>
+	<version>dev-SNAPSHOT</version>
+	<name>MineralVein++</name>
+	<url>http://www.nallar.me/minecraft/MineralVein++</url>
+	<description></description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<bukkit.version>1.2.5-R1.4-SNAPSHOT</bukkit.version>
+		<build.number>Unknown</build.number>
+	</properties>
+
+	<!-- License -->
+	<licenses>
+		<license>
+			<name>GNU GENERAL PUBLIC LICENSE Version 2</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<!-- Source code -->
+	<scm>
+		<developerConnection>scm:git:git@github.com:nallar/${project.name}.git</developerConnection>
+		<connection>scm:git:git://github.com/nallar/${project.name}.git</connection>
+		<url>https://github.com/nallar/${project.name}</url>
+	</scm>
+
+	<!-- Repository locations -->
+	<repositories>
+		<repository>
+			<id>spout-repo</id>
+			<url>http://repo.spout.org</url>
+		</repository>
+		<repository>
+			<id>repobo-snap</id>
+			<url>http://repo.bukkit.org/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+	<repository>
+		<id>repobo-rel</id>
+		<name>repo.bukkit.org Releases</name>
+		<url>http://repo.bukkit.org/content/repositories/releases/</url>
+	</repository>
+	<snapshotRepository>
+		<id>repobo-snap</id>
+		<name>repo.bukkit.org Snapshots</name>
+		<url>http://repo.bukkit.org/content/repositories/snapshots/</url>
+	</snapshotRepository>
+	</distributionManagement>
+
+	<pluginRepositories>
+	<pluginRepository>
+		<id>bukkit-plugins</id>
+		<url>http://repo.bukkit.org/content/groups/public</url>
+	</pluginRepository>
+	</pluginRepositories>
+	
+
+	<!-- Dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${bukkit.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.getspout</groupId>
+			<artifactId>spoutpluginapi</artifactId>
+			<version>dev-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.getspout</groupId>
+			<artifactId>commons</artifactId>
+			<version>dev-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<defaultGoal>clean</defaultGoal>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+		<!-- Resources -->
+		<resources>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>plugin.yml</include>
+					<include>config.yml</include>
+				</includes>
+			</resource>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>LICENSE.txt</include>
+				</includes>
+			</resource>
+		</resources>
+		<!-- Plugins -->
+		<plugins>
+			<!-- Compile plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<!-- JAR creation plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

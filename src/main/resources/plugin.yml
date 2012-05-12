@@ -1,0 +1,11 @@
+name: Mineral Vein
+load: startup
+main: mort.mineralvein.MineralVein
+version: 1.4.3
+commands:
+    mineralvein:
+        description: |
+            Apply MineralVein populator on exisiting world. (Width corresponds to z)
+            Width/height are measured in chunks added to x/z.
+            To apply to a square centered on x/z make the last parameter 1.
+        usage: /<command> apply worldname x z length width [around]

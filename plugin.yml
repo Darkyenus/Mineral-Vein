@@ -1,8 +1,0 @@
-name: Mineral Vein
-load: startup
-main: mort.mineralvein.MineralVein
-version: 1.4.3
-commands:
-    mineralvein:
-        description: Apply MineralVein populator on exisiting world. (Width corresponds to x)
-        usage: \<command> apply worldname [x] [z] [width] [height]
