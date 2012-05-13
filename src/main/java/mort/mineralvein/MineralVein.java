@@ -75,7 +75,12 @@ public class MineralVein extends JavaPlugin{
 			cs.sendMessage("Only console may call this");
 			return true;
 		}
-		if(args.length<5 || !args[0].equalsIgnoreCase("apply") ){
+		if(args[0].equalsIgnoreCase("stop")){
+			cs.sendMessage("\n\nMineralVein apply canceled.");
+			MineralVein.plugin.getServer().getScheduler().cancelTasks(MineralVein.plugin);
+			return true;
+		}
+		if(args.length < 5 || !args[0].equalsIgnoreCase("apply") ){
 			cs.sendMessage( "Usage:" + cmnd.getUsage() );
 			return true;
 		}
@@ -101,13 +106,14 @@ public class MineralVein extends JavaPlugin{
 			w = worlds.get(id);
 		}
 		
-		int x, z, width, length, chunksPerRun = 20;
+		int x, z, width, length;
+		double chunksPerRun = 20;
 		boolean around = false;
 		
 		try{
-			x = Integer.parseInt( args[2] );
-			z = Integer.parseInt( args[3] );
-			width = Integer.parseInt( args[4] );
+			x = Integer.parseInt( args[1] );
+			z = Integer.parseInt( args[2] );
+			width = Integer.parseInt( args[3] );
 			length = Integer.parseInt( args[4] );
 		}catch(Exception ex){
 			return false;
@@ -129,7 +135,7 @@ public class MineralVein extends JavaPlugin{
 			}
 			if(args.length>6){
 				try{
-					chunksPerRun = Integer.parseInt( args[6] );
+					chunksPerRun = Double.parseDouble( args[6] );
 				}catch(Exception ex){
 					return false;
 				}
@@ -143,7 +149,7 @@ public class MineralVein extends JavaPlugin{
 		
 		getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w, x, z, cs, width, length, chunksPerRun), 0, 1);
 		
-		cs.sendMessage("Mineral Vein application started");
+		cs.sendMessage("Mineral Vein application started. CPPT: "+chunksPerRun+", x: "+x+", z: "+z+", w: "+width+", l: "+length+"\n");
 		return true;
 	}
 	
@@ -154,6 +160,7 @@ public class MineralVein extends JavaPlugin{
 		int width;
 		int length;
 		int chunksPerRun;
+		double chunkChance = 0;
 		CommandSender cs;
 		VeinPopulator pop;
 		Random rnd;
@@ -161,7 +168,7 @@ public class MineralVein extends JavaPlugin{
 		int chunksLength;
 		PrintStream out = new PrintStream(new FileOutputStream(FileDescriptor.out));
 		
-		public WorldApplier(World w, int x, int z, CommandSender cs, int width, int length, int chunksPerRun){
+		public WorldApplier(World w, int x, int z, CommandSender cs, int width, int length, double chunksPerRun){
 			this.w = w;
 			this.x = x;
 			this.z = z;
@@ -170,7 +177,7 @@ public class MineralVein extends JavaPlugin{
 			this.cs = cs;
 			this.chunks = new ArrayList<MVChunk>(width*length);
 			this.rnd = new Random();
-			this.chunksPerRun = chunksPerRun;
+			this.chunksPerRun = (int)java.lang.Math.floor(chunksPerRun);
 			for( BlockPopulator pop : w.getPopulators() ){
 				if(pop instanceof VeinPopulator){
 					this.pop = (VeinPopulator) pop;
@@ -188,10 +195,19 @@ public class MineralVein extends JavaPlugin{
 				}
 			}
 			chunksLength = chunks.size();
+			if(chunksPerRun < 1){
+				chunkChance = chunksPerRun;
+				this.chunksPerRun = 1;
+			}
 		}
 		
 		@Override
 		public void run(){
+			if(chunkChance != 0){
+				if(rnd.nextDouble() > chunkChance){
+					return;
+				}
+			}
 			if(chunksPerRun > chunks.size()){
 				chunksPerRun = chunks.size();
 			}
