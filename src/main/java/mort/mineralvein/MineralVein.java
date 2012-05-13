@@ -170,7 +170,7 @@ public class MineralVein extends JavaPlugin{
 			this.cs = cs;
 			this.chunks = new ArrayList<MVChunk>(width*length);
 			this.rnd = new Random();
-			
+			this.chunksPerRun = chunksPerRun;
 			for( BlockPopulator pop : w.getPopulators() ){
 				if(pop instanceof VeinPopulator){
 					this.pop = (VeinPopulator) pop;
@@ -208,7 +208,7 @@ public class MineralVein extends JavaPlugin{
 			chunks = chunks.subList(chunksPerRun,chunks.size());
 			System.runFinalization();//Oh no... Why am I doing this? D:
 			System.gc();
-			out.printf("Applying MineralVein to "+w.getName()+". %3.4f%%, %4.1fMB free   \r",((((chunksLength-chunks.size()))*100)/(double)chunksLength),((Runtime.getRuntime().freeMemory())/(double)(1024*1024)));
+			out.printf("Applying MineralVein to "+w.getName()+". "+(chunksLength-chunks.size())+"/"+chunksLength+"%3.4f%%, %4.1fMB free   \r",((((chunksLength-chunks.size()))*100)/(double)chunksLength),((Runtime.getRuntime().freeMemory())/(double)(1024*1024)));
 			if(chunks.size() == 0){
 				out.print("\n");
 				cs.sendMessage("MineralVein applied to world " + w.getName() + ".");
