@@ -75,7 +75,7 @@ public class MineralVein extends JavaPlugin{
 			cs.sendMessage("Only console may call this");
 			return true;
 		}
-		if(args.length<6 || !args[0].equalsIgnoreCase("apply") ){
+		if(args.length<5 || !args[0].equalsIgnoreCase("apply") ){
 			cs.sendMessage( "Usage:" + cmnd.getUsage() );
 			return true;
 		}
@@ -101,7 +101,7 @@ public class MineralVein extends JavaPlugin{
 			w = worlds.get(id);
 		}
 		
-		int x, z, width, length;
+		int x, z, width, length, chunksPerRun = 20;
 		boolean around = false;
 		
 		try{
@@ -112,10 +112,27 @@ public class MineralVein extends JavaPlugin{
 		}catch(Exception ex){
 			return false;
 		}
-		
-		if(args.length>6){
+		if(length == 0 || width == 0){
+			return false;
+		}
+		if(length < 0){
+			x -= length;
+			length = -length;
+		}
+		if(width < 0){
+			z -= width;
+			width = -width;
+		}
+		if(args.length>5){
 			if("1".equals(args[5]) || "true".equalsIgnoreCase(args[5])){
 				around = true;
+			}
+			if(args.length>6){
+				try{
+					chunksPerRun = Integer.parseInt( args[6] );
+				}catch(Exception ex){
+					return false;
+				}
 			}
 		}
 		
@@ -124,7 +141,7 @@ public class MineralVein extends JavaPlugin{
 			z -= length/2;
 		}
 		
-		getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w,x,z,cs, width, length), 0, 1);
+		getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w, x, z, cs, width, length, chunksPerRun), 0, 1);
 		
 		cs.sendMessage("Mineral Vein application started");
 		return true;
@@ -136,7 +153,7 @@ public class MineralVein extends JavaPlugin{
 		int z;
 		int width;
 		int length;
-		int chunksPerRun = 20;
+		int chunksPerRun;
 		CommandSender cs;
 		VeinPopulator pop;
 		Random rnd;
@@ -144,7 +161,7 @@ public class MineralVein extends JavaPlugin{
 		int chunksLength;
 		PrintStream out = new PrintStream(new FileOutputStream(FileDescriptor.out));
 		
-		public WorldApplier(World w, int x, int z, CommandSender cs, int width, int length){
+		public WorldApplier(World w, int x, int z, CommandSender cs, int width, int length, int chunksPerRun){
 			this.w = w;
 			this.x = x;
 			this.z = z;
@@ -197,7 +214,6 @@ public class MineralVein extends JavaPlugin{
 				cs.sendMessage("MineralVein applied to world " + w.getName() + ".");
 				MineralVein.plugin.getServer().getScheduler().cancelTasks(MineralVein.plugin);
 			}
-		
 		}
 		
 		public boolean applyChunkSimple(World w, int x, int z, BlockPopulator pop, Random r, boolean checkLoad){
@@ -212,7 +228,8 @@ public class MineralVein extends JavaPlugin{
 				}
 			}
 			
-			pop.populate(w, r, w.getChunkAt(x, z) );
+			pop.populate(w, r, w.getChunkAt(x, z));
+			
 			if(unload){
 				try{
 					w.unloadChunk(x,z);

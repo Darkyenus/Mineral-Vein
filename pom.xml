@@ -8,7 +8,7 @@
 	<!-- Project information -->
 	<groupId>mort.MineralVein</groupId>
 	<artifactId>mineralveinplusplus</artifactId>
-	<version>dev-SNAPSHOT</version>
+	<version>1.01</version>
 	<name>MineralVein++</name>
 	<url>http://www.nallar.me/minecraft/MineralVein++</url>
 	<description></description>
