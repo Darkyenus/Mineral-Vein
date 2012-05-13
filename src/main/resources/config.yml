@@ -37,9 +37,9 @@ default:
     -
         block: IRON_ORE
         seed: 67436874
-        density: 0.8
+        density: 0.4
         thickness: 5
-        densityBonus: -0.2
+        densityBonus: -0.4
         heightAvg: 32
         heightVar: 30
         heightLength: 80
@@ -49,9 +49,9 @@ default:
     -
         block: REDSTONE_ORE
         seed: 4325483
-        density: 0.8
+        density: 0.7
         thickness: 3
-        densityBonus: -0.2
+        densityBonus: -0.5
         heightAvg: 10
         heightVar: 10
         heightLength: 10
@@ -61,9 +61,9 @@ default:
     -
         block: DIAMOND_ORE
         seed: 98746835
-        density: 0.8
+        density: 0.5
         thickness: 3
-        densityBonus: -0.2
+        densityBonus: -0.6
         heightAvg: 10
         heightVar: 10
         heightLength: 10
@@ -73,9 +73,9 @@ default:
     -
         block: LAPIS_ORE
         seed: 63834343
-        density: 0.8
+        density: 0.6
         thickness: 4
-        densityBonus: -0.2
+        densityBonus: -0.6
         heightAvg: 10
         heightVar: 10
         heightLength: 10
@@ -85,7 +85,7 @@ default:
     -
         block: COAL_ORE
         seed: 543543
-        density: 0.8
+        density: 0.2
         thickness: 8
         densityBonus: -0.1
         heightAvg: 40
