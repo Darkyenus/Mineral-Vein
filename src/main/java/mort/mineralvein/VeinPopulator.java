@@ -69,7 +69,7 @@ public class VeinPopulator extends BlockPopulator{
 					if( ores[i].heighRel )
 						heightCache[i] *= maxHeight;
 				}
-				for(int y=0;y<128;y++){
+				for(int y=0;y<maxHeight;y++){
 					targetBlock = w.getBlockAt(x,y,z);
 					MVMaterial blockType = new MVMaterial( targetBlock );
 					if( !blockType.equals(stoneID) ){
