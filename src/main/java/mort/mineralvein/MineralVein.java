@@ -51,6 +51,8 @@ public class MineralVein extends JavaPlugin{
 	
 	@Override
 	public void onDisable(){
+		super.onDisable();
+		MineralVein.plugin.getServer().getScheduler().cancelTasks(MineralVein.plugin);
 	}
 	
 	public OreVein[] getWorldData(World w){
