@@ -23,11 +23,11 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class MineralVein extends JavaPlugin {
 	public static MineralVein plugin;
-	public HashMap<World, OreVein[]> data = new HashMap<World, OreVein[]>();
-	public OreVein[] def = null;
-	public Configuration conf;
-	private MVExecutor executor;
+	private final HashMap<World, OreVein[]> data = new HashMap<World, OreVein[]>();
+	private OreVein[] def = null;
+	private Configuration conf;
 	public boolean debug;
+	private int applyTaskId = Integer.MIN_VALUE;
 
 	public MineralVein() {
 		plugin = this;
@@ -35,7 +35,7 @@ public class MineralVein extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		executor = new MVExecutor();
+		MVExecutor executor = new MVExecutor();
 		getServer().getPluginManager().registerEvent(WorldInitEvent.class, new MVListener(), EventPriority.LOW, executor, this);
 
 		getServer().getPluginCommand("mineralvein").setExecutor(this);
@@ -87,7 +87,7 @@ public class MineralVein extends JavaPlugin {
 		World w = getServer().getWorld(args[1]);
 
 		if (w == null) {
-			int id = -1;
+			int id;
 			java.util.List<World> worlds = getServer().getWorlds();
 			try {
 				id = Integer.parseInt(args[1]);
@@ -103,6 +103,11 @@ public class MineralVein extends JavaPlugin {
 				return true;
 			}
 			w = worlds.get(id);
+		}
+
+		if (applyTaskId == Integer.MIN_VALUE) {
+			cs.sendMessage("A mineralvein apply is already in process.");
+			return true;
 		}
 
 		int x, z, width, length;
@@ -146,26 +151,26 @@ public class MineralVein extends JavaPlugin {
 			z -= length / 2;
 		}
 
-		getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w, x, z, cs, width, length, chunksPerRun), 0, 1);
+		applyTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w, x, z, cs, width, length, chunksPerRun), 0, 1);
 
 		cs.sendMessage("Mineral Vein application started. CPPT: " + chunksPerRun + ", x: " + x + ", z: " + z + ", w: " + width + ", l: " + length + "\n");
 		return true;
 	}
 
 	private class WorldApplier implements Runnable {
-		private World w;
-		int x;
-		int z;
-		int width;
-		int length;
+		private final World w;
+		final int x;
+		final int z;
+		final int width;
+		final int length;
 		int chunksPerRun;
 		double chunkChance = 0;
-		CommandSender cs;
+		final CommandSender cs;
 		VeinPopulator pop;
-		Random rnd;
+		final Random rnd;
 		List<MVChunk> chunks;
-		int chunksLength;
-		PrintStream out = new PrintStream(new FileOutputStream(FileDescriptor.out));
+		final int chunksLength;
+		final PrintStream out = new PrintStream(new FileOutputStream(FileDescriptor.out));
 
 		public WorldApplier(World w, int x, int z, CommandSender cs, int width, int length, double chunksPerRun) {
 			this.w = w;
@@ -227,7 +232,8 @@ public class MineralVein extends JavaPlugin {
 			if (chunks.size() == 0) {
 				out.print("\n");
 				cs.sendMessage("MineralVein applied to world " + w.getName() + ".");
-				MineralVein.plugin.getServer().getScheduler().cancelTasks(MineralVein.plugin);
+				MineralVein.plugin.getServer().getScheduler().cancelTask(applyTaskId);
+				applyTaskId = Integer.MIN_VALUE;
 			}
 		}
 

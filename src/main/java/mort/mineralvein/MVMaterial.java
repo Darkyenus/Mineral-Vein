@@ -11,7 +11,7 @@ import org.bukkit.block.Block;
 public class MVMaterial {
 	public int id;
 	public byte data;
-	public boolean ignoreData = false;
+	private boolean ignoreData = false;
 
 	public MVMaterial(String str) {
 		try {
@@ -59,7 +59,7 @@ public class MVMaterial {
 		return (obj instanceof MVMaterial) && equalsMat((MVMaterial) obj);
 	}
 
-	public boolean equalsMat(MVMaterial mat) {
+	boolean equalsMat(MVMaterial mat) {
 		return (mat.ignoreData && mat.id == id) || (ignoreData && mat.id == id) || (mat.data == data && mat.id == id);
 	}
 }

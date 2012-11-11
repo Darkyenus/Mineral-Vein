@@ -5,9 +5,9 @@ import org.bukkit.Chunk;
 /**
  * @author Martin
  */
-public class MVChunk {
-	public int x;
-	public int z;
+class MVChunk {
+	public final int x;
+	public final int z;
 
 	public MVChunk(Chunk ch) {
 		this.x = ch.getX();

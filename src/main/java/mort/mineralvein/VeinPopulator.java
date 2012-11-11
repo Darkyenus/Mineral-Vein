@@ -16,9 +16,9 @@ import org.bukkit.util.noise.SimplexNoiseGenerator;
 /**
  * @author Martin
  */
-public class VeinPopulator extends BlockPopulator {
-	private static HashMap<World, NoiseGenerator[]> noise = new HashMap<World, NoiseGenerator[]>();
-	private static MVMaterial stoneID = new MVMaterial(Material.STONE);
+class VeinPopulator extends BlockPopulator {
+	private static final HashMap<World, NoiseGenerator[]> noise = new HashMap<World, NoiseGenerator[]>();
+	private static final MVMaterial stoneID = new MVMaterial(Material.STONE);
 
 	@Override
 	public void populate(World w, Random r, Chunk ch) {
@@ -101,7 +101,7 @@ public class VeinPopulator extends BlockPopulator {
 		}
 	}
 
-	public double getOreChance(int y, OreVein ore, long seed, double veinHeight, double veinDensity) {
+	double getOreChance(int y, OreVein ore, long seed, double veinHeight, double veinDensity) {
 		//chance on exact same height - 50%
 		double chance = Math.abs(y - veinHeight);
 		if (chance > ore.maxSpan) {
@@ -119,7 +119,7 @@ public class VeinPopulator extends BlockPopulator {
 		return (noise.noise(x / densLength, z / densLength) + ore.densBonus) * ore.density;
 	}
 
-	public boolean biomeChecks(Block bl, OreVein ore) {
+	boolean biomeChecks(Block bl, OreVein ore) {
 		Biome bm = null;
 		if (ore.noBiomes != null) {
 			bm = bl.getBiome();

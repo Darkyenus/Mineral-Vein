@@ -10,7 +10,7 @@ import org.bukkit.plugin.EventExecutor;
 /**
  * @author Martin
  */
-public class MVExecutor implements EventExecutor {
+class MVExecutor implements EventExecutor {
 	@Override
 	public void execute(Listener ll, Event evnt) throws EventException {
 		if (evnt instanceof WorldInitEvent) {

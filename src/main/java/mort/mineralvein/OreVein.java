@@ -63,7 +63,7 @@ public class OreVein {
 		return ret;
 	}
 
-	public static Biome[] convertStringList(List<String> list) {
+	private static Biome[] convertStringList(List<String> list) {
 		if (list.isEmpty()) {
 			return null;
 		}
@@ -74,7 +74,7 @@ public class OreVein {
 			try {
 				ret[i] = Biome.valueOf(str.toUpperCase());
 				i++;
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 			}
 		}
 		return ret;
