@@ -17,7 +17,7 @@ import org.bukkit.util.noise.SimplexNoiseGenerator;
  * @author Martin
  */
 class VeinPopulator extends BlockPopulator {
-	private static final HashMap<World, NoiseGenerator[]> noise = new HashMap<World, NoiseGenerator[]>();
+	private static final HashMap<String, NoiseGenerator[]> noise = new HashMap<String, NoiseGenerator[]>();
 	private static final MVMaterial stoneID = new MVMaterial(Material.STONE);
 
 	@Override
@@ -33,15 +33,15 @@ class VeinPopulator extends BlockPopulator {
 		}
 
 		NoiseGenerator[] noiseGen;
-		if (!noise.containsKey(w)) {
+		if (!noise.containsKey(w.getName())) {
 			noiseGen = new NoiseGenerator[ores.length * 2];
 			for (int i = 0; i < ores.length; i++) {
 				noiseGen[i * 2] = new SimplexNoiseGenerator(w.getSeed() * ores[i].seed);
 				noiseGen[i * 2 + 1] = new SimplexNoiseGenerator(w.getSeed() * ores[i].seed * 5646468L);
 			}
-			noise.put(w, noiseGen);
+			noise.put(w.getName(), noiseGen);
 		} else {
-			noiseGen = noise.get(w);
+			noiseGen = noise.get(w.getName());
 		}
 
 		double roll, chance;
