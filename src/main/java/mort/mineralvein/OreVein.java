@@ -25,11 +25,11 @@ public class OreVein {
 	public Biome[] biomes;
 	public Biome[] noBiomes;
 
-	public static OreVein[] loadConf(List lst) {
+	public static OreVein[] loadConf(List<Map<?, ?>> lst) {
 		OreVein[] ret = new OreVein[lst.size()];
 		for (int i = 0; i < lst.size(); i++) {
 			MemoryConfiguration nd = new MemoryConfiguration();
-			nd.createSection("sec", (Map<String, Object>) lst.get(i));
+			nd.createSection("sec", lst.get(i));
 			ret[i] = new OreVein();
 			ret[i].mat = new MVMaterial(nd.getString("sec.block", "0"));
 			ret[i].seed = nd.getInt("sec.seed", 6516);

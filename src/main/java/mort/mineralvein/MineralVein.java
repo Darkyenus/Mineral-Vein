@@ -221,7 +221,7 @@ public class MineralVein extends JavaPlugin {
 				return;
 			}
 			for (MVChunk chunk : chunks.subList(0, chunksPerRun)) {
-				if (!applyChunkSimple(w, chunk.x, chunk.z, pop, rnd, true)) {
+				if (!applyChunkSimple(w, chunk.x, chunk.z, pop, rnd)) {
 					//TODO ?
 				}
 			}
@@ -237,16 +237,14 @@ public class MineralVein extends JavaPlugin {
 			}
 		}
 
-		public boolean applyChunkSimple(World w, int x, int z, BlockPopulator pop, Random r, boolean checkLoad) {
+		public boolean applyChunkSimple(World w, int x, int z, BlockPopulator pop, Random r) {
 			boolean unload = false;
-			if (checkLoad) {
-				if (!w.isChunkLoaded(x, z)) {
-					if (!w.loadChunk(x, z, true)) {
-						cs.sendMessage("Failed to load chunk, coordinates: x:" + x * 16 + ", z:" + z * 16 + "\n");
-						return false;
-					}
-					unload = true;
+			if (!w.isChunkLoaded(x, z)) {
+				if (!w.loadChunk(x, z, true)) {
+					cs.sendMessage("Failed to load chunk, coordinates: x:" + x * 16 + ", z:" + z * 16 + "\n");
+					return false;
 				}
+				unload = true;
 			}
 
 			pop.populate(w, r, w.getChunkAt(x, z));

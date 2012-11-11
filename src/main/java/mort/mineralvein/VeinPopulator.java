@@ -50,7 +50,7 @@ class VeinPopulator extends BlockPopulator {
 		int chX = ch.getX() * 16;
 		int chZ = ch.getZ() * 16;
 		int maxHeight;
-		HashSet block = new HashSet();
+		HashSet<MVMaterial> block = new HashSet<MVMaterial>();
 		Block targetBlock, biomeCheck;
 		for (OreVein ore : ores) {
 			if (!ore.addMode) {
@@ -88,7 +88,7 @@ class VeinPopulator extends BlockPopulator {
 					}
 					roll = r.nextDouble();
 					for (int i = 0; i < ores.length; i++) {
-						chance = getOreChance(y, ores[i], w.getSeed(), heightCache[i], densCache[i]);
+						chance = getOreChance(y, ores[i], heightCache[i], densCache[i]);
 						if (roll < chance) {
 							targetBlock.setTypeIdAndData(ores[i].mat.id, ores[i].mat.data, false);
 							break;
@@ -101,7 +101,7 @@ class VeinPopulator extends BlockPopulator {
 		}
 	}
 
-	double getOreChance(int y, OreVein ore, long seed, double veinHeight, double veinDensity) {
+	double getOreChance(int y, OreVein ore, double veinHeight, double veinDensity) {
 		//chance on exact same height - 50%
 		double chance = Math.abs(y - veinHeight);
 		if (chance > ore.maxSpan) {
