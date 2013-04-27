@@ -9,14 +9,14 @@
 	<!-- Project information -->
 	<groupId>me.nallar</groupId>
 	<artifactId>mineralveinplusplus</artifactId>
-	<version>1.07</version>
+	<version>1.10</version>
 	<name>MineralVein++</name>
 	<url>http://www.nallar.me/minecraft/MineralVein++</url>
 	<description></description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkit.version>1.4.2-R0.3-SNAPSHOT</bukkit.version>
+		<bukkit.version>1.5.1-R0.3-SNAPSHOT</bukkit.version>
 		<build.number>Unknown</build.number>
 		<minimumJreVersion>1.6</minimumJreVersion>
 	</properties>
