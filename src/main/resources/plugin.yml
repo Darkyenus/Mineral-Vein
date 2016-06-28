@@ -5,8 +5,7 @@ version: ${project.version}
 commands:
     mineralvein:
         description: |
-            Apply MineralVein populator on exisiting world. (Width corresponds to z)
-            Width/height are measured in chunks added to x/z.
-            To apply to a square centered on x/z make the last parameter 1.
+            Apply MineralVein populator on exisiting world.
+            X and z chunk coordinates control the center of chunk crawl, is spawnpoint chunk by default.
             Use 'stop' instead of 'apply' to cancel a currently in progress apply.
-        usage: /<command> apply worldname x z length width [around] [chunks processed per tick]
+        usage: /<command> apply worldname [x] [z] [chunks processed per tick]

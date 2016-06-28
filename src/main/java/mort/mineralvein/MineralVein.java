@@ -1,6 +1,7 @@
 
 package mort.mineralvein;
 
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,12 +13,7 @@ import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 import static org.bukkit.event.EventPriority.LOW;
@@ -75,18 +71,21 @@ public class MineralVein extends JavaPlugin implements Listener {
 	}
 
 	@Override
-	public boolean onCommand (CommandSender cs, Command cmnd, String string, String[] args) {
+	public boolean onCommand (final CommandSender cs, final Command command, final String string, final String[] args) {
+
 		if (!(cs instanceof ConsoleCommandSender)) {
 			cs.sendMessage("Only console may call this");
 			return true;
 		}
-		if (args[0].equalsIgnoreCase("stop")) {
+
+		if (args.length >= 1 && args[0].equalsIgnoreCase("stop")) {
 			cs.sendMessage("\n\nMineralVein apply canceled.");
 			MineralVein.plugin.getServer().getScheduler().cancelTasks(MineralVein.plugin);
 			return true;
 		}
-		if (args.length < 5 || !args[0].equalsIgnoreCase("apply")) {
-			cs.sendMessage("Usage:" + cmnd.getUsage());
+
+		if ((args.length == 0) || (!args[0].equalsIgnoreCase("apply"))) {
+			cs.sendMessage("Usage:" + command.getUsage());
 			return true;
 		}
 
@@ -116,155 +115,138 @@ public class MineralVein extends JavaPlugin implements Listener {
 			return true;
 		}
 
-		int x, z, width, length;
+		final int x, z;
 		double chunksPerRun = 20;
-		boolean around = false;
 
-		try {
-			x = Integer.parseInt(args[1]);
-			z = Integer.parseInt(args[2]);
-			width = Integer.parseInt(args[3]);
-			length = Integer.parseInt(args[4]);
-		} catch (Exception ex) {
-			return false;
-		}
-		if (length == 0 || width == 0) {
-			return false;
-		}
-		if (length < 0) {
-			x -= length;
-			length = -length;
-		}
-		if (width < 0) {
-			z -= width;
-			width = -width;
-		}
-		if (args.length > 5) {
-			if ("1".equals(args[5]) || "true".equalsIgnoreCase(args[5])) {
-				around = true;
+		if (args.length >= 4) {
+			try {
+				x = Integer.parseInt(args[2]);
+				z = Integer.parseInt(args[3]);
+			} catch (Exception ex) {
+				return false;
 			}
-			if (args.length > 6) {
-				try {
-					chunksPerRun = Double.parseDouble(args[6]);
-				} catch (Exception ex) {
-					return false;
-				}
+		} else {
+			final Chunk spawnChunk = w.getSpawnLocation().getChunk();
+			x = spawnChunk.getX();
+			z = spawnChunk.getZ();
+		}
+
+		if (args.length >= 5) {
+			try {
+				chunksPerRun = Double.parseDouble(args[4]);
+			} catch (Exception ex) {
+				return false;
 			}
 		}
 
-		if (around) {
-			x -= width / 2;
-			z -= length / 2;
-		}
+		applyTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w, x, z, cs, chunksPerRun), 0,
+			1);
 
-		applyTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(plugin,
-			new WorldApplier(w, x, z, cs, width, length, chunksPerRun), 0, 1);
-
-		cs.sendMessage("Mineral Vein application started. CPPT: " + chunksPerRun + ", x: " + x + ", z: " + z + ", w: " + width
-			+ ", l: " + length + "\n");
+		cs.sendMessage("Mineral Vein generation started from [" + x + ", " + z + "] in batches of " + chunksPerRun);
 		return true;
 	}
 
 	private class WorldApplier implements Runnable {
-		private final World w;
-		final int x;
-		final int z;
-		final int width;
-		final int length;
-		int chunksPerRun;
-		double chunkChance = 0;
-		final CommandSender cs;
-		VeinPopulator pop;
-		final Random rnd;
-		List<MVChunk> chunks;
-		final int chunksLength;
-		final PrintStream out = new PrintStream(new FileOutputStream(FileDescriptor.out));
 
-		public WorldApplier (World w, int x, int z, CommandSender cs, int width, int length, double chunksPerRun) {
-			this.w = w;
-			this.x = x;
-			this.z = z;
-			this.width = width;
-			this.length = length;
-			this.cs = cs;
-			this.chunks = new ArrayList<>(width * length);
-			this.rnd = new Random();
-			this.chunksPerRun = (int)java.lang.Math.floor(chunksPerRun);
-			for (BlockPopulator pop : w.getPopulators()) {
-				if (pop instanceof VeinPopulator) {
-					this.pop = (VeinPopulator)pop;
-					break;
+		private final World world;
+		private final VeinPopulator pop;
+		private final Random random = new Random();
+
+		private final int chunksPerRun;
+		private final double chunkChance;
+		private final CommandSender owner;
+
+		private int x, z, dx = 0, dz = -1;
+		private int processed = 0;
+
+		public WorldApplier (World world, int x, int z, CommandSender owner, double chunksPerRun) {
+			this.world = world;
+			this.owner = owner;
+
+			pop:
+			{
+				for (BlockPopulator pop : world.getPopulators()) {
+					if (pop instanceof VeinPopulator) {
+						this.pop = (VeinPopulator)pop;
+						break pop;
+					}
 				}
-			}
-
-			if (this.pop == null) {
 				this.pop = new VeinPopulator();
 			}
 
-			for (int X = x; X < (x + length); X++) {
-				for (int Z = z; Z < (z + width); Z++) {
-					chunks.add(new MVChunk(X, Z));
-				}
-			}
-			chunksLength = chunks.size();
 			if (chunksPerRun < 1) {
-				chunkChance = chunksPerRun;
+				this.chunkChance = chunksPerRun;
 				this.chunksPerRun = 1;
+			} else {
+				this.chunkChance = 1;
+				this.chunksPerRun = (int)chunksPerRun;
 			}
+
+			this.x = x;
+			this.z = z;
 		}
+
+		/*
+		 * World applier goes in a spiral from the given origin, populating chunks. When it processes a side of a spiral without any
+		 * generated chunks to populate, it increments turnsWithoutProcessing. When this number is greater than
+		 * TURNS_WITHOUT_PROCESSING_CUTOFF, algorithm terminates.
+		 */
+		private boolean processedOnThisSide = false;
+		private int turnsWithoutProcessing = 0;
+		private static final int TURNS_WITHOUT_PROCESSING_CUTOFF = 16;
 
 		@Override
 		public void run () {
-			if (chunkChance != 0) {
-				if (rnd.nextDouble() > chunkChance) {
-					return;
+
+			for (int c = 0; c < chunksPerRun; c++) {
+				if (random.nextDouble() < chunkChance) {
+					if (populateChunk()) {
+						processedOnThisSide = true;
+					}
+					processed++;
 				}
-			}
-			if (chunksPerRun > chunks.size()) {
-				chunksPerRun = chunks.size();
-			}
-			if (Runtime.getRuntime().freeMemory() < (25 * 1024 * 1024)) {
-				cs.sendMessage("MineralVein apply stopped - out of memory.");
-				MineralVein.plugin.getServer().getScheduler().cancelTasks(MineralVein.plugin);
-				return;
-			}
-			for (MVChunk chunk : chunks.subList(0, chunksPerRun)) {
-				if (!applyChunkSimple(w, chunk.x, chunk.z, pop, rnd)) {
-					// TODO ?
+
+				if ((x == z) || ((x < 0) && (x == -z)) || ((x > 0) && (x == 1 - z))) {
+					int t = dx;
+					dx = -dz;
+					dz = t;
+
+					if (processedOnThisSide) {
+						turnsWithoutProcessing = 0;
+					} else {
+						turnsWithoutProcessing++;
+						if (turnsWithoutProcessing >= TURNS_WITHOUT_PROCESSING_CUTOFF) {
+							owner.sendMessage("MineralVein applied to world " + world.getName() + ".");
+							MineralVein.plugin.getServer().getScheduler().cancelTask(applyTaskId);
+							applyTaskId = Integer.MIN_VALUE;
+						}
+					}
 				}
+				x += dx;
+				z += dz;
 			}
-			chunks = chunks.subList(chunksPerRun, chunks.size());
-			System.runFinalization();// Oh no... Why am I doing this? D:
-			System.gc();
-			out.printf("Applying MineralVein to " + w.getName() + ". %3.4f%%, %4.1fMB free   \r",
-				((((chunksLength - chunks.size())) * 100) / (double)chunksLength),
+
+			System.out.printf("Applying MineralVein to " + world.getName() + ". %3.4d processed, %4.1fMB free   \r", processed,
 				((Runtime.getRuntime().freeMemory()) / (double)(1024 * 1024)));
-			if (chunks.size() == 0) {
-				out.print("\n");
-				cs.sendMessage("MineralVein applied to world " + w.getName() + ".");
-				MineralVein.plugin.getServer().getScheduler().cancelTask(applyTaskId);
-				applyTaskId = Integer.MIN_VALUE;
-			}
 		}
 
-		public boolean applyChunkSimple (World w, int x, int z, BlockPopulator pop, Random r) {
-			boolean unload = false;
-			if (!w.isChunkLoaded(x, z)) {
-				if (!w.loadChunk(x, z, true)) {
-					cs.sendMessage("Failed to load chunk, coordinates: x:" + x * 16 + ", z:" + z * 16 + "\n");
+		public boolean populateChunk () {
+			final World world = this.world;
+
+			final boolean unload;
+			if (world.isChunkLoaded(x, z)) {
+				unload = false;
+			} else {
+				unload = true;
+				if (!world.loadChunk(x, z, false)) {
 					return false;
 				}
-				unload = true;
 			}
 
-			pop.populate(w, r, w.getChunkAt(x, z));
+			pop.populate(world, random, world.getChunkAt(x, z));
 
 			if (unload) {
-				try {
-					w.unloadChunk(x, z);
-				} catch (Exception e) {
-					return false;
-				}
+				world.unloadChunk(x, z);
 			}
 			return true;
 		}
