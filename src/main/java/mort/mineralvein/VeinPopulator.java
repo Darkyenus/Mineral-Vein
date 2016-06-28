@@ -17,7 +17,7 @@ import org.bukkit.util.noise.SimplexNoiseGenerator;
  * @author Martin
  */
 class VeinPopulator extends BlockPopulator {
-	private static final HashMap<String, NoiseGenerator[]> noise = new HashMap<String, NoiseGenerator[]>();
+	private static final HashMap<String, NoiseGenerator[]> noise = new HashMap<>();
 	private static final MVMaterial stoneID = new MVMaterial(Material.STONE);
 
 	@Override
@@ -50,7 +50,7 @@ class VeinPopulator extends BlockPopulator {
 		int chX = ch.getX() * 16;
 		int chZ = ch.getZ() * 16;
 		int maxHeight;
-		HashSet<MVMaterial> block = new HashSet<MVMaterial>();
+		HashSet<MVMaterial> block = new HashSet<>();
 		Block targetBlock, biomeCheck;
 		for (OreVein ore : ores) {
 			if (!ore.addMode) {
@@ -72,7 +72,7 @@ class VeinPopulator extends BlockPopulator {
 					if (ores[i].exclusive) {
 						exclusiveDens -= densCache[i];
 					}
-					if (ores[i].heighRel) {
+					if (ores[i].heightRel) {
 						heightCache[i] *= maxHeight;
 					}
 				}

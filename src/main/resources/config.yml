@@ -17,22 +17,22 @@ default:
         # maximal random difference from heightAvg, default 20
         heightRel: false
         # if true, result of heightAvg and heightVar calculation will be instead 
-        #treated as "relative" to maxHeight in that area (you should use floats for heightAvg/Car)
-        #dafaults to false
+        # treated as "relative" to maxHeight in that area (you should use floats for heightAvg/Car)
+        # defaults to false
         heightLength: 80
         # distance in blocks between height slope change, default 80
         densLength: 80
         # distance in blocks between density slope change, dafult 80
         exclusive: false
         # if this ore is present, it will block out any other ores (in column), default false;
-        #biomes: [forest,swamp]
+        # biomes: [forest,swamp]
         # this vein will manifest in given biomes. default: all biomes
         # biomes are (not all used by world gen): RAINFOREST, SWAMPLAND, SEASONAL_FOREST, FOREST, SAVANNA, SHRUBLAND, TAIGA, DESERT, PLAINS, ICE_DESERT, TUNDRA, HELL, SKY, OCEAN, RIVER, EXTREME_HILLS;;
         mode: replace
         # "add" will cause all already placed ore to remain, and this vein only to add new ores.
-        #any other value will cause the old ore to be removed
-        #exclude_biomes: [swampland]
-        #same as biomes setting, this time sets the biomes that are specifically excluded for this vein. Takes precedence over "biomes"
+        # any other value will cause the old ore to be removed
+        # exclude_biomes: [swampland]
+        # same as biomes setting, this time sets the biomes that are specifically excluded for this vein. Takes precedence over "biomes"
         
     -
         block: IRON_ORE

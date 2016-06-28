@@ -12,9 +12,9 @@ import org.bukkit.plugin.EventExecutor;
  */
 class MVExecutor implements EventExecutor {
 	@Override
-	public void execute(Listener ll, Event evnt) throws EventException {
-		if (evnt instanceof WorldInitEvent) {
-			WorldInitEvent event = (WorldInitEvent) evnt;
+	public void execute(Listener ll, Event e) throws EventException {
+		if (e instanceof WorldInitEvent) {
+			WorldInitEvent event = (WorldInitEvent) e;
 			if (event.getWorld().getEnvironment() == Environment.NORMAL) {
 				event.getWorld().getPopulators().add(new VeinPopulator());
 			}

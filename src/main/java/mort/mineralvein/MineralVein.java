@@ -23,7 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class MineralVein extends JavaPlugin {
 	public static MineralVein plugin;
-	private final HashMap<World, OreVein[]> data = new HashMap<World, OreVein[]>();
+	private final HashMap<World, OreVein[]> data = new HashMap<>();
 	private OreVein[] def = null;
 	private Configuration conf;
 	public boolean debug;
@@ -179,7 +179,7 @@ public class MineralVein extends JavaPlugin {
 			this.width = width;
 			this.length = length;
 			this.cs = cs;
-			this.chunks = new ArrayList<MVChunk>(width * length);
+			this.chunks = new ArrayList<>(width * length);
 			this.rnd = new Random();
 			this.chunksPerRun = (int) java.lang.Math.floor(chunksPerRun);
 			for (BlockPopulator pop : w.getPopulators()) {

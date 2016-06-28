@@ -21,7 +21,7 @@ public class OreVein {
 	public double densLength;
 	public boolean exclusive;
 	public boolean addMode;
-	public boolean heighRel;
+	public boolean heightRel;
 	public Biome[] biomes;
 	public Biome[] noBiomes;
 
@@ -38,7 +38,7 @@ public class OreVein {
 			ret[i].densBonus = nd.getDouble("sec.densityBonus", 0);
 			ret[i].areaHeight = nd.getDouble("sec.heightAvg", 32);
 			ret[i].areaSpan = nd.getDouble("sec.heightVar", 20);
-			ret[i].heighRel = nd.getBoolean("sec.heighRel", false);
+			ret[i].heightRel = nd.getBoolean("sec.heightRel", false);
 			ret[i].heightLength = nd.getDouble("sec.heightLength", 80);
 			ret[i].densLength = nd.getDouble("sec.densLength", 80);
 			ret[i].exclusive = nd.getBoolean("sec.exclusive", false);
