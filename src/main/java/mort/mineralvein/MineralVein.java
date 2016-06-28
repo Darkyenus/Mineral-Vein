@@ -14,6 +14,7 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import static org.bukkit.event.EventPriority.LOW;
@@ -89,34 +90,24 @@ public class MineralVein extends JavaPlugin implements Listener {
 			return true;
 		}
 
-		World w = getServer().getWorld(args[1]);
+		World w = args.length >= 2 ? getServer().getWorld(args[1]) : null;
 
 		if (w == null) {
-			int id;
-			java.util.List<World> worlds = getServer().getWorlds();
-			try {
-				id = Integer.parseInt(args[1]);
-			} catch (Exception e) {
-				cs.sendMessage("Given world not found. Try using world id: ");
-				for (int i = 0; i < worlds.size(); i++) {
-					cs.sendMessage(i + ". " + worlds.get(i).getName() + " (" + worlds.get(i).getEnvironment() + ")");
-				}
-				return true;
+			final List<World> worlds = getServer().getWorlds();
+			cs.sendMessage("Given world not found. Existing worlds:");
+			for (World world : worlds) {
+				cs.sendMessage(world.getName() + " (" + world.getEnvironment() + ")");
 			}
-			if (id < 0 || id >= worlds.size()) {
-				cs.sendMessage("No world at this ID.");
-				return true;
-			}
-			w = worlds.get(id);
+			return true;
 		}
 
-		if (applyTaskId == Integer.MIN_VALUE) {
+		if (applyTaskId != Integer.MIN_VALUE) {
 			cs.sendMessage("A mineralvein apply is already in process.");
 			return true;
 		}
 
 		final int x, z;
-		double chunksPerRun = 20;
+		double chunksPerRun = 500;
 
 		if (args.length >= 4) {
 			try {
@@ -156,7 +147,8 @@ public class MineralVein extends JavaPlugin implements Listener {
 		private final double chunkChance;
 		private final CommandSender owner;
 
-		private int x, z, dx = 0, dz = -1;
+		private final int xOff, zOff;
+		private int x = 0, z = 0, dx = 0, dz = -1;
 		private int processed = 0;
 
 		public WorldApplier (World world, int x, int z, CommandSender owner, double chunksPerRun) {
@@ -182,8 +174,8 @@ public class MineralVein extends JavaPlugin implements Listener {
 				this.chunksPerRun = (int)chunksPerRun;
 			}
 
-			this.x = x;
-			this.z = z;
+			this.xOff = x;
+			this.zOff = z;
 		}
 
 		/*
@@ -193,7 +185,7 @@ public class MineralVein extends JavaPlugin implements Listener {
 		 */
 		private boolean processedOnThisSide = false;
 		private int turnsWithoutProcessing = 0;
-		private static final int TURNS_WITHOUT_PROCESSING_CUTOFF = 16;
+		private static final int TURNS_WITHOUT_PROCESSING_CUTOFF = 5;
 
 		@Override
 		public void run () {
@@ -206,7 +198,7 @@ public class MineralVein extends JavaPlugin implements Listener {
 					processed++;
 				}
 
-				if ((x == z) || ((x < 0) && (x == -z)) || ((x > 0) && (x == 1 - z))) {
+				if (x == z || (x < 0 && x == -z) || (x > 0 && x == 1 - z)) {
 					int t = dx;
 					dx = -dz;
 					dz = t;
@@ -222,16 +214,19 @@ public class MineralVein extends JavaPlugin implements Listener {
 						}
 					}
 				}
+
 				x += dx;
 				z += dz;
 			}
 
-			System.out.printf("Applying MineralVein to " + world.getName() + ". %3.4d processed, %4.1fMB free   \r", processed,
-				((Runtime.getRuntime().freeMemory()) / (double)(1024 * 1024)));
+			System.out.println(String.format("Applying MineralVein to %s. %3d processed, %4.1fMB free", world.getName(), processed,
+				((Runtime.getRuntime().freeMemory()) / (double)(1024 * 1024))));
 		}
 
 		public boolean populateChunk () {
 			final World world = this.world;
+			final int x = this.x + xOff;
+			final int z = this.z + zOff;
 
 			final boolean unload;
 			if (world.isChunkLoaded(x, z)) {
@@ -239,6 +234,7 @@ public class MineralVein extends JavaPlugin implements Listener {
 			} else {
 				unload = true;
 				if (!world.loadChunk(x, z, false)) {
+					if (debug) System.out.println("Not populating " + x + ", " + z);
 					return false;
 				}
 			}
@@ -248,6 +244,7 @@ public class MineralVein extends JavaPlugin implements Listener {
 			if (unload) {
 				world.unloadChunk(x, z);
 			}
+			if (debug) System.out.println("Populated " + x + ", " + z + "   " + unload);
 			return true;
 		}
 	}
