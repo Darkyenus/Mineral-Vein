@@ -1,20 +1,19 @@
-package mort.mineralvein;
 
-import java.util.StringTokenizer;
+package mort.mineralvein;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-/**
- * @author Martin
- */
+import java.util.StringTokenizer;
+
+/** @author Martin */
 public class MVMaterial {
 
 	public int id;
 	public byte data;
 	private boolean ignoreData = false;
 
-	public MVMaterial(String str) {
+	public MVMaterial (String str) {
 		try {
 			Material mat = Material.valueOf(str.toUpperCase());
 			id = mat.getId();
@@ -39,28 +38,28 @@ public class MVMaterial {
 		}
 	}
 
-	public MVMaterial(Block bl) {
+	public MVMaterial (Block bl) {
 		id = bl.getTypeId();
 		data = bl.getData();
 	}
 
-	public MVMaterial(Material mat) {
+	public MVMaterial (Material mat) {
 		id = mat.getId();
 		data = 0;
 		ignoreData = true;
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode () {
 		return id << 8 + ((data < 0) ? (data + 256) : data);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return (obj instanceof MVMaterial) && equalsMat((MVMaterial) obj);
+	public boolean equals (Object obj) {
+		return (obj instanceof MVMaterial) && equalsMat((MVMaterial)obj);
 	}
 
-	boolean equalsMat(MVMaterial mat) {
+	boolean equalsMat (MVMaterial mat) {
 		return (mat.ignoreData && mat.id == id) || (ignoreData && mat.id == id) || (mat.data == data && mat.id == id);
 	}
 }

@@ -1,8 +1,5 @@
-package mort.mineralvein;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
+package mort.mineralvein;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -13,21 +10,23 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
 
-/**
- * @author Martin
- */
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
+
+/** @author Martin */
 class VeinPopulator extends BlockPopulator {
 	private static final HashMap<String, NoiseGenerator[]> noise = new HashMap<>();
 	private static final MVMaterial stoneID = new MVMaterial(Material.STONE);
 
 	@Override
-	public void populate(World w, Random r, Chunk ch) {
+	public void populate (World w, Random r, Chunk ch) {
 		if (MineralVein.plugin.debug) {
 			System.out.print("Populating chunk " + ch);
 		}
 
 		OreVein[] ores = MineralVein.plugin.getWorldData(w);
-		if (ores == null) //no ores defined for this worlds
+		if (ores == null) // no ores defined for this worlds
 		{
 			return;
 		}
@@ -101,8 +100,8 @@ class VeinPopulator extends BlockPopulator {
 		}
 	}
 
-	double getOreChance(int y, OreVein ore, double veinHeight, double veinDensity) {
-		//chance on exact same height - 50%
+	double getOreChance (int y, OreVein ore, double veinHeight, double veinDensity) {
+		// chance on exact same height - 50%
 		double chance = Math.abs(y - veinHeight);
 		if (chance > ore.maxSpan) {
 			return 0;
@@ -111,15 +110,15 @@ class VeinPopulator extends BlockPopulator {
 		}
 	}
 
-	double getVeinHeight(double x, double z, OreVein ore, NoiseGenerator noise, double heightLength) {
+	double getVeinHeight (double x, double z, OreVein ore, NoiseGenerator noise, double heightLength) {
 		return noise.noise(x / heightLength, z / heightLength) * ore.areaSpan + ore.areaHeight;
 	}
 
-	double getVeinDensity(double x, double z, OreVein ore, NoiseGenerator noise, double densLength) {
+	double getVeinDensity (double x, double z, OreVein ore, NoiseGenerator noise, double densLength) {
 		return (noise.noise(x / densLength, z / densLength) + ore.densBonus) * ore.density;
 	}
 
-	boolean biomeChecks(Block bl, OreVein ore) {
+	boolean biomeChecks (Block bl, OreVein ore) {
 		Biome bm = null;
 		if (ore.noBiomes != null) {
 			bm = bl.getBiome();

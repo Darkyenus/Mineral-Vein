@@ -1,3 +1,4 @@
+
 package mort.mineralvein;
 
 import org.bukkit.World;
@@ -21,9 +22,7 @@ import java.util.Random;
 
 import static org.bukkit.event.EventPriority.LOW;
 
-/**
- * @author Martin
- */
+/** @author Martin */
 public class MineralVein extends JavaPlugin implements Listener {
 	public static MineralVein plugin;
 	private final HashMap<World, OreVein[]> data = new HashMap<>();
@@ -32,12 +31,12 @@ public class MineralVein extends JavaPlugin implements Listener {
 	public boolean debug;
 	private int applyTaskId = Integer.MIN_VALUE;
 
-	public MineralVein() {
+	public MineralVein () {
 		plugin = this;
 	}
 
 	@Override
-	public void onEnable() {
+	public void onEnable () {
 		getServer().getPluginManager().registerEvents(this, this);
 
 		conf = getConfig();
@@ -48,19 +47,19 @@ public class MineralVein extends JavaPlugin implements Listener {
 	}
 
 	@EventHandler(priority = LOW)
-	public void onWorldInit(WorldInitEvent event) {
+	public void onWorldInit (WorldInitEvent event) {
 		if (event.getWorld().getEnvironment() == World.Environment.NORMAL) {
 			event.getWorld().getPopulators().add(new VeinPopulator());
 		}
 	}
 
 	@Override
-	public void onDisable() {
+	public void onDisable () {
 		super.onDisable();
 		MineralVein.plugin.getServer().getScheduler().cancelTasks(MineralVein.plugin);
 	}
 
-	public OreVein[] getWorldData(World w) {
+	public OreVein[] getWorldData (World w) {
 		if (data.containsKey(w)) {
 			return data.get(w);
 		} else if (conf.contains(w.getName())) {
@@ -76,7 +75,7 @@ public class MineralVein extends JavaPlugin implements Listener {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] args) {
+	public boolean onCommand (CommandSender cs, Command cmnd, String string, String[] args) {
 		if (!(cs instanceof ConsoleCommandSender)) {
 			cs.sendMessage("Only console may call this");
 			return true;
@@ -158,9 +157,11 @@ public class MineralVein extends JavaPlugin implements Listener {
 			z -= length / 2;
 		}
 
-		applyTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w, x, z, cs, width, length, chunksPerRun), 0, 1);
+		applyTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(plugin,
+			new WorldApplier(w, x, z, cs, width, length, chunksPerRun), 0, 1);
 
-		cs.sendMessage("Mineral Vein application started. CPPT: " + chunksPerRun + ", x: " + x + ", z: " + z + ", w: " + width + ", l: " + length + "\n");
+		cs.sendMessage("Mineral Vein application started. CPPT: " + chunksPerRun + ", x: " + x + ", z: " + z + ", w: " + width
+			+ ", l: " + length + "\n");
 		return true;
 	}
 
@@ -179,7 +180,7 @@ public class MineralVein extends JavaPlugin implements Listener {
 		final int chunksLength;
 		final PrintStream out = new PrintStream(new FileOutputStream(FileDescriptor.out));
 
-		public WorldApplier(World w, int x, int z, CommandSender cs, int width, int length, double chunksPerRun) {
+		public WorldApplier (World w, int x, int z, CommandSender cs, int width, int length, double chunksPerRun) {
 			this.w = w;
 			this.x = x;
 			this.z = z;
@@ -188,10 +189,10 @@ public class MineralVein extends JavaPlugin implements Listener {
 			this.cs = cs;
 			this.chunks = new ArrayList<>(width * length);
 			this.rnd = new Random();
-			this.chunksPerRun = (int) java.lang.Math.floor(chunksPerRun);
+			this.chunksPerRun = (int)java.lang.Math.floor(chunksPerRun);
 			for (BlockPopulator pop : w.getPopulators()) {
 				if (pop instanceof VeinPopulator) {
-					this.pop = (VeinPopulator) pop;
+					this.pop = (VeinPopulator)pop;
 					break;
 				}
 			}
@@ -213,7 +214,7 @@ public class MineralVein extends JavaPlugin implements Listener {
 		}
 
 		@Override
-		public void run() {
+		public void run () {
 			if (chunkChance != 0) {
 				if (rnd.nextDouble() > chunkChance) {
 					return;
@@ -229,13 +230,15 @@ public class MineralVein extends JavaPlugin implements Listener {
 			}
 			for (MVChunk chunk : chunks.subList(0, chunksPerRun)) {
 				if (!applyChunkSimple(w, chunk.x, chunk.z, pop, rnd)) {
-					//TODO ?
+					// TODO ?
 				}
 			}
 			chunks = chunks.subList(chunksPerRun, chunks.size());
-			System.runFinalization();//Oh no... Why am I doing this? D:
+			System.runFinalization();// Oh no... Why am I doing this? D:
 			System.gc();
-			out.printf("Applying MineralVein to " + w.getName() + ". %3.4f%%, %4.1fMB free   \r", ((((chunksLength - chunks.size())) * 100) / (double) chunksLength), ((Runtime.getRuntime().freeMemory()) / (double) (1024 * 1024)));
+			out.printf("Applying MineralVein to " + w.getName() + ". %3.4f%%, %4.1fMB free   \r",
+				((((chunksLength - chunks.size())) * 100) / (double)chunksLength),
+				((Runtime.getRuntime().freeMemory()) / (double)(1024 * 1024)));
 			if (chunks.size() == 0) {
 				out.print("\n");
 				cs.sendMessage("MineralVein applied to world " + w.getName() + ".");
@@ -244,7 +247,7 @@ public class MineralVein extends JavaPlugin implements Listener {
 			}
 		}
 
-		public boolean applyChunkSimple(World w, int x, int z, BlockPopulator pop, Random r) {
+		public boolean applyChunkSimple (World w, int x, int z, BlockPopulator pop, Random r) {
 			boolean unload = false;
 			if (!w.isChunkLoaded(x, z)) {
 				if (!w.loadChunk(x, z, true)) {

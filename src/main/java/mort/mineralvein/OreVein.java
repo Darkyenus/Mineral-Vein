@@ -1,3 +1,4 @@
+
 package mort.mineralvein;
 
 import org.bukkit.block.Biome;
@@ -6,9 +7,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Martin
- */
+/** @author Martin */
 public class OreVein {
 	public MVMaterial material;
 	public int seed;
@@ -25,7 +24,7 @@ public class OreVein {
 	public Biome[] biomes;
 	public Biome[] noBiomes;
 
-	public static OreVein[] loadConf(List<Map<?, ?>> lst) {
+	public static OreVein[] loadConf (List<Map<?, ?>> lst) {
 		OreVein[] ret = new OreVein[lst.size()];
 		for (int i = 0; i < lst.size(); i++) {
 			MemoryConfiguration nd = new MemoryConfiguration();
@@ -44,13 +43,11 @@ public class OreVein {
 			ret[i].exclusive = nd.getBoolean("sec.exclusive", false);
 			ret[i].addMode = nd.getString("sec.mode", "").equals("add");
 			if (nd.contains("sec.biomes")) {
-				//System.out.println("LOADING BIOMES LIST"+nd.getProperty("biomes")+": "+nd.getStringList("biomes", null)+"; "+nd.getString("biomes"));
 				ret[i].biomes = convertStringList(nd.getStringList("sec.biomes"));
 			} else {
 				ret[i].biomes = null;
 			}
 			if (nd.contains("sec.exclude_biomes")) {
-				//System.out.println("LOADING BIOMES LIST"+nd.getProperty("biomes")+": "+nd.getStringList("biomes", null)+"; "+nd.getString("biomes"));
 				ret[i].noBiomes = convertStringList(nd.getStringList("sec.exclude_biomes"));
 			} else {
 				ret[i].noBiomes = null;
@@ -63,7 +60,7 @@ public class OreVein {
 		return ret;
 	}
 
-	private static Biome[] convertStringList(List<String> list) {
+	private static Biome[] convertStringList (List<String> list) {
 		if (list.isEmpty()) {
 			return null;
 		}
