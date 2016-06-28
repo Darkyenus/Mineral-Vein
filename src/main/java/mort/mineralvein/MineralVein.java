@@ -1,5 +1,16 @@
 package mort.mineralvein;
 
+import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldInitEvent;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -8,20 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.world.WorldInitEvent;
-import org.bukkit.generator.BlockPopulator;
-import org.bukkit.plugin.java.JavaPlugin;
+import static org.bukkit.event.EventPriority.LOW;
 
 /**
  * @author Martin
  */
-public class MineralVein extends JavaPlugin {
+public class MineralVein extends JavaPlugin implements Listener {
 	public static MineralVein plugin;
 	private final HashMap<World, OreVein[]> data = new HashMap<>();
 	private OreVein[] def = null;
@@ -35,16 +38,20 @@ public class MineralVein extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		MVExecutor executor = new MVExecutor();
-		getServer().getPluginManager().registerEvent(WorldInitEvent.class, new MVListener(), EventPriority.LOW, executor, this);
-
-		getServer().getPluginCommand("mineralvein").setExecutor(this);
+		getServer().getPluginManager().registerEvents(this, this);
 
 		conf = getConfig();
 		conf.options().copyDefaults(true);
 		saveConfig();
 
 		debug = conf.getBoolean("debug", false);
+	}
+
+	@EventHandler(priority = LOW)
+	public void onWorldInit(WorldInitEvent event) {
+		if (event.getWorld().getEnvironment() == World.Environment.NORMAL) {
+			event.getWorld().getPopulators().add(new VeinPopulator());
+		}
 	}
 
 	@Override
