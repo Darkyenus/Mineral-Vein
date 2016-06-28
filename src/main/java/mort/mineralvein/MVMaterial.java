@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
  * @author Martin
  */
 public class MVMaterial {
+
 	public int id;
 	public byte data;
 	private boolean ignoreData = false;

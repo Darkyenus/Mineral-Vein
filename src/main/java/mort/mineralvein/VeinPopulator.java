@@ -54,7 +54,7 @@ class VeinPopulator extends BlockPopulator {
 		Block targetBlock, biomeCheck;
 		for (OreVein ore : ores) {
 			if (!ore.addMode) {
-				block.add(ore.mat);
+				block.add(ore.material);
 			}
 		}
 		for (int x = chX; x < (16 + chX); x++) {
@@ -90,7 +90,7 @@ class VeinPopulator extends BlockPopulator {
 					for (int i = 0; i < ores.length; i++) {
 						chance = getOreChance(y, ores[i], heightCache[i], densCache[i]);
 						if (roll < chance) {
-							targetBlock.setTypeIdAndData(ores[i].mat.id, ores[i].mat.data, false);
+							targetBlock.setTypeIdAndData(ores[i].material.id, ores[i].material.data, false);
 							break;
 						} else {
 							roll -= chance;

@@ -1,16 +1,16 @@
 package mort.mineralvein;
 
-import java.util.List;
-import java.util.Map;
-
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.MemoryConfiguration;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Martin
  */
 public class OreVein {
-	public MVMaterial mat;
+	public MVMaterial material;
 	public int seed;
 	public double density;
 	public double maxSpan;
@@ -31,8 +31,8 @@ public class OreVein {
 			MemoryConfiguration nd = new MemoryConfiguration();
 			nd.createSection("sec", lst.get(i));
 			ret[i] = new OreVein();
-			ret[i].mat = new MVMaterial(nd.getString("sec.block", "0"));
-			ret[i].seed = nd.getInt("sec.seed", 6516);
+			ret[i].material = new MVMaterial(nd.getString("sec.block", "0"));
+			ret[i].seed = nd.getInt("sec.seed", ret[i].material.id);
 			ret[i].density = nd.getDouble("sec.density", 1);
 			ret[i].maxSpan = nd.getDouble("sec.thickness", 5);
 			ret[i].densBonus = nd.getDouble("sec.densityBonus", 0);
@@ -56,7 +56,7 @@ public class OreVein {
 				ret[i].noBiomes = null;
 			}
 			if (MineralVein.plugin.debug) {
-				System.out.println("LOADED ORE: " + ret[i].mat.id);
+				System.out.println("LOADED ORE: " + ret[i].material.id);
 			}
 		}
 
