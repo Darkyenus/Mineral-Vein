@@ -16,7 +16,7 @@ default:
         # density modification. Random number is between -1 and 1, this is applied and result is ore spawn chance (negative is zero chance), default 0
         # e.g. 0.0 will result in 50% of columns covered in ore, -0.5 25%, -0.9 5%, -1 0%
 
-        heightAvg: 20
+        heightAvg: 25
         # average height this vein spawn at, default 32
 
         heightVar: 20
