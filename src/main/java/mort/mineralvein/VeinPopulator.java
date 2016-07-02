@@ -58,18 +58,14 @@ class VeinPopulator extends BlockPopulator {
 		}
 		for (int x = chX; x < (16 + chX); x++) {
 			for (int z = chZ; z < (16 + chZ); z++) {
-				double exclusiveDens = 1;
 				maxHeight = ch.getWorld().getHighestBlockAt(x, z).getY();
 				biomeCheck = ch.getBlock(x, 64, z);
 				for (int i = 0; i < ores.length; i++) {
 					heightCache[i] = getVeinHeight(x, z, ores[i], noiseGen[i * 2], ores[i].heightLength);
 					if (biomeChecks(biomeCheck, ores[i])) {
-						densCache[i] = getVeinDensity(x, z, ores[i], noiseGen[i * 2 + 1], ores[i].densLength) * exclusiveDens;
+						densCache[i] = getVeinDensity(x, z, ores[i], noiseGen[i * 2 + 1], ores[i].densLength);
 					} else {
 						densCache[i] = 0;
-					}
-					if (ores[i].exclusive) {
-						exclusiveDens -= densCache[i];
 					}
 					if (ores[i].heightRel) {
 						heightCache[i] *= maxHeight;

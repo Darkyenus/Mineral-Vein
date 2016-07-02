@@ -35,9 +35,6 @@ default:
         # distance in blocks between density slope change, dafult 80
         # larger = more evenly dense veins
 
-        exclusive: false
-        # if this ore is present, it will block out any other ores (in column), default false;
-
         #biomes: [forest,swamp]
         # this vein will manifest in given biomes. default: all biomes
         # biomes are (not all used by world gen): RAINFOREST, SWAMPLAND, SEASONAL_FOREST, FOREST, SAVANNA, SHRUBLAND, TAIGA, DESERT, PLAINS, ICE_DESERT, TUNDRA, HELL, SKY, OCEAN, RIVER, EXTREME_HILLS;;
@@ -58,7 +55,6 @@ default:
         heightVar: 30
         heightLength: 80
         densLength: 80
-        exclusive: false
         mode: replace
     -
         block: REDSTONE_ORE
@@ -69,7 +65,6 @@ default:
         heightVar: 10
         heightLength: 10
         densLength: 30
-        exclusive: false
         mode: replace
     -
         block: DIAMOND_ORE
@@ -80,7 +75,6 @@ default:
         heightVar: 10
         heightLength: 10
         densLength: 40
-        exclusive: false
         mode: replace
     -
         block: LAPIS_ORE
@@ -91,7 +85,6 @@ default:
         heightVar: 10
         heightLength: 10
         densLength: 40
-        exclusive: false
         mode: replace
     -
         block: COAL_ORE
@@ -102,5 +95,4 @@ default:
         heightVar: 40
         heightLength: 80
         densLength: 80
-        exclusive: false
         mode: replace
