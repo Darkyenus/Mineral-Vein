@@ -9,12 +9,12 @@ default:
         density: 0.3
         # ore chance multiplicator, default 1
 
-        thickness: 4
-        # maximal vertical span from vein center, default 5
-
         densityBonus: -0.5
         # density modification. Random number is between -1 and 1, this is applied and result is ore spawn chance (negative is zero chance), default 0
         # e.g. 0.0 will result in 50% of columns covered in ore, -0.5 25%, -0.9 5%, -1 0%
+
+        thickness: 4
+        # maximal vertical span from vein center, default 5
 
         heightAvg: 25
         # average height this vein spawn at, default 32
@@ -29,9 +29,11 @@ default:
 
         heightLength: 80
         # distance in blocks between height slope change, default 80
+        # larger = larger veins horizontally
 
         densLength: 80
         # distance in blocks between density slope change, dafult 80
+        # larger = more evenly dense veins
 
         exclusive: false
         # if this ore is present, it will block out any other ores (in column), default false;

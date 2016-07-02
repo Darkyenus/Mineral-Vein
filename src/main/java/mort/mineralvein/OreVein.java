@@ -12,10 +12,10 @@ public class OreVein {
 	public MVMaterial material;
 	public int seed;
 	public double density;
-	public double maxSpan;
+	public double thickness;
 	public double densBonus;
-	public double areaHeight;
-	public double areaSpan;
+	public double heightAvg;
+	public double heightVar;
 	public double heightLength;
 	public double densLength;
 	public boolean exclusive;
@@ -33,10 +33,10 @@ public class OreVein {
 			ret[i].material = new MVMaterial(nd.getString("sec.block", "0"));
 			ret[i].seed = nd.getInt("sec.seed", ret[i].material.id);
 			ret[i].density = nd.getDouble("sec.density", 1);
-			ret[i].maxSpan = nd.getDouble("sec.thickness", 5);
+			ret[i].thickness = nd.getDouble("sec.thickness", 5);
 			ret[i].densBonus = nd.getDouble("sec.densityBonus", 0);
-			ret[i].areaHeight = nd.getDouble("sec.heightAvg", 32);
-			ret[i].areaSpan = nd.getDouble("sec.heightVar", 20);
+			ret[i].heightAvg = nd.getDouble("sec.heightAvg", 32);
+			ret[i].heightVar = nd.getDouble("sec.heightVar", 20);
 			ret[i].heightRel = nd.getBoolean("sec.heightRel", false);
 			ret[i].heightLength = nd.getDouble("sec.heightLength", 80);
 			ret[i].densLength = nd.getDouble("sec.densLength", 80);

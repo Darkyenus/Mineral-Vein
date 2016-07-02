@@ -78,6 +78,7 @@ class VeinPopulator extends BlockPopulator {
 				for (int y = 0; y < maxHeight; y++) {
 					targetBlock = w.getBlockAt(x, y, z);
 					MVMaterial blockType = new MVMaterial(targetBlock);
+					//Remove old ores
 					if (!blockType.equals(stoneID)) {
 						if (block.contains(blockType)) {
 							targetBlock.setTypeIdAndData(stoneID.id, stoneID.data, false);
@@ -103,15 +104,15 @@ class VeinPopulator extends BlockPopulator {
 	double getOreChance (int y, OreVein ore, double veinHeight, double veinDensity) {
 		// chance on exact same height - 50%
 		double chance = Math.abs(y - veinHeight);
-		if (chance > ore.maxSpan) {
+		if (chance > ore.thickness) {
 			return 0;
 		} else {
-			return Math.max(((Math.cos(chance * Math.PI / ore.maxSpan) + 1) / 2) * veinDensity, 0);
+			return Math.max(((Math.cos(chance * Math.PI / ore.thickness) + 1) / 2) * veinDensity, 0);
 		}
 	}
 
 	double getVeinHeight (double x, double z, OreVein ore, NoiseGenerator noise, double heightLength) {
-		return noise.noise(x / heightLength, z / heightLength) * ore.areaSpan + ore.areaHeight;
+		return noise.noise(x / heightLength, z / heightLength) * ore.heightVar + ore.heightAvg;
 	}
 
 	double getVeinDensity (double x, double z, OreVein ore, NoiseGenerator noise, double densLength) {
