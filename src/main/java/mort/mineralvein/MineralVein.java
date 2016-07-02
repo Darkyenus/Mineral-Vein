@@ -130,7 +130,7 @@ public class MineralVein extends JavaPlugin implements Listener {
 			}
 		}
 
-		applyTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w, x, z, cs, chunksPerRun), 0,
+		applyTaskId = getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WorldApplier(w, x, z, chunksPerRun), 0,
 			1);
 
 		cs.sendMessage("Mineral Vein generation started from [" + x + ", " + z + "] in batches of " + chunksPerRun);
@@ -145,15 +145,13 @@ public class MineralVein extends JavaPlugin implements Listener {
 
 		private final int chunksPerRun;
 		private final double chunkChance;
-		private final CommandSender owner;
 
 		private final int xOff, zOff;
 		private int x = 0, z = 0, dx = 0, dz = -1;
 		private int processed = 0;
 
-		public WorldApplier (World world, int x, int z, CommandSender owner, double chunksPerRun) {
+		public WorldApplier(World world, int x, int z, double chunksPerRun) {
 			this.world = world;
-			this.owner = owner;
 
 			pop:
 			{
@@ -189,7 +187,6 @@ public class MineralVein extends JavaPlugin implements Listener {
 
 		@Override
 		public void run () {
-
 			for (int c = 0; c < chunksPerRun; c++) {
 				if (random.nextDouble() < chunkChance) {
 					if (populateChunk()) {
@@ -208,11 +205,13 @@ public class MineralVein extends JavaPlugin implements Listener {
 					} else {
 						turnsWithoutProcessing++;
 						if (turnsWithoutProcessing >= TURNS_WITHOUT_PROCESSING_CUTOFF) {
-							owner.sendMessage("MineralVein applied to world " + world.getName() + ".");
+							System.out.println("MineralVein applied to world '" + world.getName() + "'");
 							MineralVein.plugin.getServer().getScheduler().cancelTask(applyTaskId);
 							applyTaskId = Integer.MIN_VALUE;
+							return;
 						}
 					}
+					processedOnThisSide = false;
 				}
 
 				x += dx;

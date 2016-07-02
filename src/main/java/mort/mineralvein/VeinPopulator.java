@@ -77,7 +77,11 @@ class VeinPopulator extends BlockPopulator {
 					//Remove old ores
 					if (!blockType.equals(stoneID)) {
 						if (block.contains(blockType)) {
-							targetBlock.setTypeIdAndData(stoneID.id, stoneID.data, false);
+							if(MineralVein.plugin.debug){
+								targetBlock.setType(Material.GLASS);
+							} else  {
+								targetBlock.setTypeIdAndData(stoneID.id, stoneID.data, false);
+							}
 						} else {
 							continue;
 						}
