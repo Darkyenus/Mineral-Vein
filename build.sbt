@@ -2,6 +2,8 @@ name := "MineralVein"
 
 version := "0.1-SNAPSHOT"
 
+crossPaths := false
+
 autoScalaLibrary := false
 
 resolvers += ("spigot-repo" at "https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
