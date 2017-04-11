@@ -1,7 +1,7 @@
-name: Mineral Vein
+name: MineralVein
 load: startup
 main: mort.mineralvein.MineralVein
-version: ${project.version}
+version: 0.1-SNAPSHOT
 commands:
     mineralvein:
         description: |

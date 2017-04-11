@@ -1,4 +1,4 @@
-name := "Mineral-Vein"
+name := "MineralVein"
 
 version := "0.1-SNAPSHOT"
 
